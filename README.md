@@ -33,7 +33,7 @@ pip install -r requirements.txt
    - Visit [Hugging Face](https://huggingface.co)
    - Make an account if you don't already have one
    - Click on your profile, then "Access Tokens" and make a new token
-   - Make a .env file and save the token as HF_TOKEN
+   - Make a .env file with `HF_TOKEN=<insert your token here>`
    - Now, log in to Hugging Face in the terminal as well:
    ```bash
    huggingface-cli login
