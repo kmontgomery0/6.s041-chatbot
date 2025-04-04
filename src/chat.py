@@ -37,19 +37,7 @@ class SchoolChatbot:
              User: {user_input}
              Assistant:"
         """
-        system_prompt = """You are a helpful assistant that specializes in helping parents choose Boston public schools.
-        You provide accurate information about school programs, locations, enrollment processes, and other important details.
-        Always be professional, clear, and focused on helping parents make informed decisions about schools.
-        """
-        
-        # Combine system prompt with user input
-        formatted_prompt = f"""
-        {system_prompt}
-
-        User: {user_input}
-        Assistant:"""
-        
-        return formatted_prompt
+        pass
         
     def get_response(self, user_input):
         """
@@ -67,25 +55,7 @@ class SchoolChatbot:
             str: The chatbot's response
 
         Implementation tips:
-        - Use self.tokenizer to convert text to tokens
-        - Use self.model.generate() for text generation
-        - Consider parameters like temperature and max_length
-        - Clean up the response before returning it
+        - Use self.format_prompt() to format the user's input
+        - Use self.client to generate responses
         """
-        prompt = self.format_prompt(user_input)
-        
-        try:
-            print("Generating response...")
-            response = self.client.text_generation(
-                prompt,
-                max_new_tokens=300,
-                temperature=0.7,
-                top_p=0.95,
-                do_sample=True,
-                return_full_text=False
-            )
-            return response.strip().split("Assistant:")[-1].strip()
-            
-        except Exception as e:
-            print(f"API error: {e}")
-            return f"I apologize, but I encountered an error: {str(e)}"
+        pass

@@ -60,20 +60,15 @@ def create_chatbot():
                 - Return that response as a string
         """
         # TODO: Generate and return response
-        try:
-            # Generate response using our chatbot
-            response = chatbot.get_response(message)
-            return response
-            
-        except Exception as e:
-            return f"I apologize, but I encountered an error. Please try again. Error: {str(e)}"
+        pass
+
     
     
-    # Create Gradio interface. Customize the interface as you'd like!
+    # Create Gradio interface. Customize the interface however you'd like!
     demo = gr.ChatInterface(
         chat,
         title="Boston Public School Selection Assistant",
-        description="Ask me anything about Boston public schools! Since I am a free tier chatbot, I may give a 503 error when I'm busy. If that happens, please try again in a few minutes.",
+        description="Ask me anything about Boston public schools! Since I am a free tier chatbot, I may give a 503 error when I'm busy. If that happens, please try again a few seconds later.",
         examples=[
             "I live in Jamaica Plain and want to send my child to kindergarten. What schools are available?"
         ]
