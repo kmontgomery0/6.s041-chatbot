@@ -1,6 +1,6 @@
 ---
-title: <Your Chatbot Title>
-emoji: <Your Chatbot Emoji>
+title: Staff School Choice Chatbot
+emoji: 🚀
 colorFrom: blue
 colorTo: red
 sdk: gradio
