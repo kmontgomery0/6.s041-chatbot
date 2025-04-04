@@ -1,23 +1,21 @@
-import torch
-import gc
+from huggingface_hub import InferenceClient
+from config import BASE_MODEL, MY_MODEL, HF_TOKEN
 
 class SchoolChatbot:
     """
     This class is extra scaffolding around a model. Modify this class to specify how the model recieves prompts and generates responses.
 
     Example usage:
-        model, tokenizer = load_model()
-        chatbot = SchoolChatbot(model, tokenizer)
+        chatbot = SchoolChatbot()
         response = chatbot.get_response("What schools offer Spanish programs?")
     """
 
-    def __init__(self, model, tokenizer):
+    def __init__(self):
         """
-        Initialize the chatbot with a model and tokenizer.
-        You don't need to modify this method.
+        Initialize the chatbot with a HF model ID
         """
-        self.model = model
-        self.tokenizer = tokenizer
+        model_id = MY_MODEL if MY_MODEL else BASE_MODEL # define MY_MODEL in config.py if you create a new model in the HuggingFace Hub
+        self.client = InferenceClient(model=model_id, token=HF_TOKEN)
         
     def format_prompt(self, user_input):
         """
@@ -75,46 +73,20 @@ class SchoolChatbot:
         - Clean up the response before returning it
         """
         prompt = self.format_prompt(user_input)
-    
-        # Memory-efficient tokenization
-        print("Tokenizing...")
-        inputs = self.tokenizer(
-            prompt,
-            return_tensors="pt",
-            padding=True,
-            truncation=True,
-            max_length=256    # Reduced input length for CPU
-        )
         
-        # Memory-efficient generation
-        print("Generating...")
-        with torch.inference_mode():
-            outputs = self.model.generate(
-                inputs['input_ids'],    # Changed to directly use input_ids
-                attention_mask=inputs['attention_mask'] if 'attention_mask' in inputs else None,
-                max_new_tokens=150,     # Reduced output length for CPU
+        try:
+            print("Generating response...")
+            response = self.client.text_generation(
+                prompt,
+                max_new_tokens=150,
                 temperature=0.7,
                 top_p=0.95,
-                do_sample=True,
-                pad_token_id=self.tokenizer.eos_token_id,
                 repetition_penalty=1.2,
-                num_return_sequences=1,
-                early_stopping=True
+                do_sample=True,
+                return_full_text=False
             )
-        
-        # Clean up memory
-        del inputs
-        gc.collect()     # Force garbage collection
-        
-        response = self.tokenizer.decode(
-            outputs[0],
-            skip_special_tokens=True,
-            clean_up_tokenization_spaces=True
-        )
-        
-        # Clean up more memory
-        del outputs
-        gc.collect()
-        
-        response = response.split("Assistant:")[-1].strip()
-        return response
+            return response.strip().split("Assistant:")[-1].strip()
+            
+        except Exception as e:
+            print(f"API error: {e}")
+            return f"I apologize, but I encountered an error: {str(e)}"

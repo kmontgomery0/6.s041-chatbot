@@ -1,6 +1,6 @@
 ---
-title: Boston Public School Choice
-emoji: 🚀
+title: <Your Chatbot Title>
+emoji: <Your Chatbot Emoji>
 colorFrom: blue
 colorTo: red
 sdk: gradio
@@ -8,7 +8,6 @@ sdk_version: 3.50.2
 python_version: 3.10
 app_file: app.py
 pinned: false
-repository_branch: staff-version
 ---
 
 # Boston Public School Selection Chatbot
@@ -28,13 +27,19 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-2. Get access to the LLaMA model:
-   - Visit [Hugging Face](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
-   - Request access to the LLaMA 2 model
-   - Once approved, log in to Hugging Face:
+2. Make a HuggingFace account and make an access token:
+   - Visit [Hugging Face](https://huggingface.co)
+   - Make an account if you don't already have one
+   - Click on your profile, then "Access Tokens" and make a new token
+   - Make a .env file and save the token as HF_TOKEN
+   - Now, log in to Hugging Face in the terminal as well:
    ```bash
    huggingface-cli login
    ```
+
+3. Choose a base model:
+   - In config.py, set the BASE_MODEL variable to your base model of choice from HuggingFace.
+   - Keep in mind it's better to have a small, lightweight model if you plan on finetuning.
 
 3. Run the chatbot:
 ```bash
@@ -73,7 +78,7 @@ To deploy your chatbot as a free web interface using Hugging Face Spaces:
    ```
 
 4. Important Free Tier Considerations:
-   - Use TinyLlama model (already configured in model.py)
+   - Use free tier model (already configured in model.py)
    - Free CPU spaces have 2GB RAM limit
    - Responses might be slower than local testing
    - The interface might queue requests when multiple users access it
@@ -113,14 +118,13 @@ boston-school-chatbot/
 
 - **app.py**: Creates the web interface using Gradio. You only need to implement the `chat` function that generates responses.
 
-- **model.py**: Handles loading and saving of LLaMA models. This is already implemented.
-
 - **chat.py**: Contains the `SchoolChatbot` class where you'll implement:
   - `format_prompt`: Format user input into proper prompts
   - `get_response`: Generate responses using the model
 
+- **config.py**: Contains the `BASE_MODEL` and `MY_MODEL` variables, which are names of models on HuggingFace. Update the `MY_MODEL` variable if you create a new model and upload it to the HuggingFace Hub.
+
 - **chatbot_development.ipynb**: Jupyter notebook for:
-  - Loading and testing your model
   - Experimenting with the chatbot
   - Trying different approaches
   - Testing responses before deployment

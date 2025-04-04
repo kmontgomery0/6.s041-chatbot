@@ -19,15 +19,13 @@ Example Usage:
 """
 
 import gradio as gr
-from src.model import load_model
 from src.chat import SchoolChatbot
 
 def create_chatbot():
     """
     Creates and configures the chatbot interface.
     """
-    model, tokenizer = load_model()
-    chatbot = SchoolChatbot(model, tokenizer)
+    chatbot = SchoolChatbot()
     
     def chat(message, history):
         """
