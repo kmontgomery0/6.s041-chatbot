@@ -1,0 +1,71 @@
+User: Hi, I'm looking for a public school in Boston for my child who will be starting kindergarten next year.
+
+Bot: Hello! I'd be happy to help you find the right public school in Boston. To better assist you, could you tell me:
+1. Which neighborhood do you live in?
+2. Do you have any specific preferences (like language programs, special education services, or after-school programs)?
+3. Would you prefer a traditional public school or a charter school?
+
+User: We live in Jamaica Plain, and I'm interested in schools with strong language programs. My child is already showing interest in learning Spanish.
+
+Bot: Great! I can help you with that. There are several excellent options in Jamaica Plain and nearby areas. Let me suggest a few schools that might be a good fit:
+
+1. The Hernandez K-8 School in Roxbury (about 1.5 miles from JP) offers a Spanish-English dual language program starting from kindergarten. They have a strong academic reputation and diverse student body.
+
+2. The Mozart Elementary School in JP has a Spanish language immersion program and is known for its strong arts integration.
+
+3. The Mission Hill K-8 School in Roxbury offers Spanish language classes and has a progressive education model.
+
+Would you like to know more about any of these schools? I can provide details about:
+- Class sizes
+- Test scores
+- Special programs
+- Parent reviews
+- Transportation options
+
+User: Could you tell me more about the Hernandez School? I've heard good things about it.
+
+Bot: Certainly! The Hernandez K-8 School has several notable features:
+
+- Their dual language program is one of the strongest in the district, with 50% of instruction in Spanish and 50% in English
+- Average class size is 22 students
+- They offer free breakfast and lunch programs
+- The school has a strong parent-teacher organization
+- They provide after-school programs until 6 PM
+- The school is accessible by public transportation (Orange Line and several bus routes)
+
+Would you like to know about:
+1. Their enrollment process?
+2. How to schedule a school tour?
+3. Their academic performance metrics?
+4. Specific programs for kindergarten students?
+
+User: Yes, how do I schedule a tour?
+
+Bot: You can schedule a tour of the Hernandez School in two ways:
+
+1. Call the main office at (617) 635-XXXX during school hours (8:00 AM - 4:00 PM)
+2. Visit the Boston Public Schools website and use their online tour scheduling system
+
+Tours are typically offered on Tuesday and Thursday mornings at 9:00 AM. They last about 45 minutes and include:
+- A classroom visit
+- Meeting with the principal
+- Q&A session
+- Overview of the dual language program
+
+Would you like me to provide the exact contact information for scheduling a tour?
+
+User: Yes, please.
+
+Bot: Here's the contact information for the Hernandez School:
+
+Main Office: (617) 635-XXXX
+Email: hernandez@bostonpublicschools.org
+Address: 61 School Street, Roxbury, MA 02119
+
+The school's website is: www.bostonpublicschools.org/hernandez
+
+Is there anything else you'd like to know about the school or other options in the area?
+
+User: No, that's very helpful! Thank you.
+
+Bot: You're welcome! Good luck with your school search. If you have any more questions about Boston public schools or need help with the enrollment process, feel free to ask. Have a great day! 
