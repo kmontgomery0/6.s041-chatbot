@@ -1,5 +1,5 @@
 ---
-title: Staff School Choice Chatbot
+title: 6.S041 Staff Chatbot
 emoji: 🚀
 colorFrom: blue
 colorTo: red
@@ -8,6 +8,8 @@ sdk_version: 5.23.3
 python_version: "3.10"
 app_file: app.py
 pinned: false
+secrets:
+  - HF_TOKEN
 ---
 
 # Boston Public School Selection Chatbot
