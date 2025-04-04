@@ -43,10 +43,59 @@ pip install -r requirements.txt
    - In config.py, set the BASE_MODEL variable to your base model of choice from HuggingFace.
    - Keep in mind it's better to have a small, lightweight model if you plan on finetuning.
 
-3. After you update the code, you can run the chatbot locally:
+
+
+## Repository Organization
+
+```
+boston-school-chatbot/
+├── app.py              # Gradio web interface - implement the chat function
+├── requirements.txt    # Python dependencies
+├── chatbot_development.ipynb     # Notebook for developing and testing your chatbot
+├── .env     # Add this file yourself for storing your HF_TOKEN
+├── config.py     # Holds variables for the models from HuggingFace you will use
+├── chatbot_conversation_example.txt     # Example conversation we might want to have with this chatbot
+└── src/
+    ├── model.py       # Model loading/saving (already implemented)
+    └── chat.py        # SchoolChatbot class (implement this)
+```
+
+### Key Files:
+
+- **app.py**: Creates the web interface using Gradio. You only need to implement the `chat` function that generates responses.
+
+- **chat.py**: Contains the `SchoolChatbot` class where you'll implement:
+  - `format_prompt`: Format user input into proper prompts
+  - `get_response`: Generate responses using the model
+
+- **config.py**: Contains the `BASE_MODEL` and `MY_MODEL` variables, which are names of models on HuggingFace. Update the `MY_MODEL` variable if you create a new model and upload it to the HuggingFace Hub.
+
+- **chatbot_development.ipynb**: Jupyter notebook for:
+  - Experimenting with the chatbot
+  - Trying different approaches
+  - Testing responses before deployment
+
+### What You Need to Implement:
+
+1. In `chat.py`:
+   - Complete the `SchoolChatbot` class methods
+   - Design how the chatbot formats prompts
+   - Implement response generation
+
+2. In `app.py`:
+   - Implement the `chat` function to work with Gradio
+   - The rest of the file is already set up
+
+3. Use `chatbot_development.ipynb` to:
+   - Develop and test your implementation
+   - Try different approaches
+   - Verify everything works before deployment
+
+4. After you update the code, you can run the chatbot locally:
 ```bash
 python app.py
 ```
+
 
 ## Deploying to Hugging Face
 
@@ -106,50 +155,4 @@ To deploy your chatbot as a free web interface using Hugging Face Spaces:
    - Remember free tier has limited resources. Sometimes if you get a 503 error it means the server is overloaded. Just try again a few seconds later.
 
 Your chatbot should now be accessible to anyone through their web browser!
-
-## Repository Organization
-
-```
-boston-school-chatbot/
-├── app.py              # Gradio web interface - implement the chat function
-├── requirements.txt    # Python dependencies
-├── chatbot_development.ipynb     # Notebook for developing and testing your chatbot
-├── .env     # Add this file yourself for storing your HF_TOKEN
-├── config.py     # Holds variables for the models from HuggingFace you will use
-├── chatbot_conversation_example.txt     # Example conversation we might want to have with this chatbot
-└── src/
-    ├── model.py       # Model loading/saving (already implemented)
-    └── chat.py        # SchoolChatbot class (implement this)
-```
-
-### Key Files:
-
-- **app.py**: Creates the web interface using Gradio. You only need to implement the `chat` function that generates responses.
-
-- **chat.py**: Contains the `SchoolChatbot` class where you'll implement:
-  - `format_prompt`: Format user input into proper prompts
-  - `get_response`: Generate responses using the model
-
-- **config.py**: Contains the `BASE_MODEL` and `MY_MODEL` variables, which are names of models on HuggingFace. Update the `MY_MODEL` variable if you create a new model and upload it to the HuggingFace Hub.
-
-- **chatbot_development.ipynb**: Jupyter notebook for:
-  - Experimenting with the chatbot
-  - Trying different approaches
-  - Testing responses before deployment
-
-### What You Need to Implement:
-
-1. In `chat.py`:
-   - Complete the `SchoolChatbot` class methods
-   - Design how the chatbot formats prompts
-   - Implement response generation
-
-2. In `app.py`:
-   - Implement the `chat` function to work with Gradio
-   - The rest of the file is already set up
-
-3. Use `chatbot_development.ipynb` to:
-   - Develop and test your implementation
-   - Try different approaches
-   - Verify everything works before deployment
 
