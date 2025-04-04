@@ -48,7 +48,7 @@ pip install -r requirements.txt
 ## Repository Organization
 
 ```
-boston-school-chatbot/
+6.s041-chatbot/
 ├── app.py              # Gradio web interface - implement the chat function
 ├── requirements.txt    # Python dependencies
 ├── chatbot_development.ipynb     # Notebook for developing and testing your chatbot
@@ -56,7 +56,6 @@ boston-school-chatbot/
 ├── config.py     # Holds variables for the models from HuggingFace you will use
 ├── chatbot_conversation_example.txt     # Example conversation we might want to have with this chatbot
 └── src/
-    ├── model.py       # Model loading/saving (already implemented)
     └── chat.py        # SchoolChatbot class (implement this)
 ```
 
