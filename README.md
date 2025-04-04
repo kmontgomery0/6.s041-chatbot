@@ -8,6 +8,7 @@ sdk_version: 3.50.2
 python_version: 3.10
 app_file: app.py
 pinned: false
+repository_branch: staff-version
 ---
 
 # Boston Public School Selection Chatbot
