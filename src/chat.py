@@ -78,10 +78,9 @@ class SchoolChatbot:
             print("Generating response...")
             response = self.client.text_generation(
                 prompt,
-                max_new_tokens=150,
+                max_new_tokens=300,
                 temperature=0.7,
                 top_p=0.95,
-                repetition_penalty=1.2,
                 do_sample=True,
                 return_full_text=False
             )

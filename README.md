@@ -14,9 +14,9 @@ secrets:
 
 # Boston Public School Selection Chatbot
 
-This is a skeleton repo you can use to design a school choice chatbot. Feel free to change it however you'd like! This repo is compatible with CPU (using your own computer). Loading the model and running inference might be a little slow, but it should be manageable. If you have access to your own GPUs you can use them as well, but we don't require it whatsoever.
+This is a skeleton repo you can use to design your school choice chatbot. Feel free to change it however you'd like! This repo is compatible with CPU (using your own computer) because it uses models on HuggingFace. You can also load models locally if you'd like, but we recommend using smaller ones.
 
-The end goal: make the chatbot and upload it to a huggingface space. We have included instructions for interacting with huggingface below. Here's an example of the final output we made as an example:. Your chatbot should be much better!
+The end goal: make the chatbot and upload it to a Huggingface Space. We have included instructions for using HuggingFace below. [Here's an example](https://huggingface.co/spaces/sbentley/Boston-School-Choice) of a chatbot made by the course staff. Yours should be much better!
 
 Note: We encourage you to use AI tools (like Cursor or LLMs) to help you on this assignment. Learn how to leverage these tools.
 
@@ -43,7 +43,7 @@ pip install -r requirements.txt
    - In config.py, set the BASE_MODEL variable to your base model of choice from HuggingFace.
    - Keep in mind it's better to have a small, lightweight model if you plan on finetuning.
 
-3. Run the chatbot:
+3. After you update the code, you can run the chatbot locally:
 ```bash
 python app.py
 ```
@@ -79,13 +79,18 @@ To deploy your chatbot as a free web interface using Hugging Face Spaces:
    git push -u origin main
    ```
 
-4. Important Free Tier Considerations:
+4. Add your HF_TOKEN to the space as a secret.
+   - Go to Files.
+   - Go to Settings.
+   - Under secrets, add HF_TOKEN.
+   
+
+5. Important Free Tier Considerations:
    - Use free tier model (already configured in model.py)
    - Free CPU spaces have 2GB RAM limit
-   - Responses might be slower than local testing
-   - The interface might queue requests when multiple users access it
+   - The interface might queue requests when multiple users access it. Sometimes there will be 503 errors.
 
-5. After Deployment:
+6. After Deployment:
    - Your chatbot will be available at: `https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME`
    - Anyone can use it through their web browser
    - You can update the deployment anytime by pushing changes:
@@ -95,11 +100,10 @@ To deploy your chatbot as a free web interface using Hugging Face Spaces:
      git push
      ```
 
-6. Troubleshooting:
+7. Troubleshooting:
    - Check the Space's logs if the chatbot isn't working
-   - Make sure you're using TinyLlama model
    - Verify the chatbot works locally before deploying
-   - Remember free tier has limited resources
+   - Remember free tier has limited resources. Sometimes if you get a 503 error it means the server is overloaded. Just try again a few seconds later.
 
 Your chatbot should now be accessible to anyone through their web browser!
 
@@ -110,6 +114,8 @@ boston-school-chatbot/
 ├── app.py              # Gradio web interface - implement the chat function
 ├── requirements.txt    # Python dependencies
 ├── chatbot_development.ipynb     # Notebook for developing and testing your chatbot
+├── .env     # Add this file yourself for storing your HF_TOKEN
+├── config.py     # Holds variables for the models from HuggingFace you will use
 ├── chatbot_conversation_example.txt     # Example conversation we might want to have with this chatbot
 └── src/
     ├── model.py       # Model loading/saving (already implemented)
