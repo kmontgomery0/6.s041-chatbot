@@ -1,11 +1,29 @@
+---
+title: Boston Public School Choice
+emoji: 🚀
+colorFrom: blue
+colorTo: red
+sdk: gradio
+sdk_version: 3.50.2
+python_version: 3.10
+app_file: app.py
+pinned: false
+---
+
 # Boston Public School Selection Chatbot
 
-This is a skeleton repo you can use to design a school choice chatbot. Feel free to change it however you'd like! The end goal: make the chatbot and upload it to a huggingface space. Instructions for doing so are below.
+This is a skeleton repo you can use to design a school choice chatbot. Feel free to change it however you'd like! This repo is compatible with CPU (using your own computer). Loading the model and running inference might be a little slow, but it should be manageable. If you have access to your own GPUs you can use them as well, but we don't require it whatsoever.
+
+The end goal: make the chatbot and upload it to a huggingface space. We have included instructions for interacting with huggingface below. Here's an example of the final output we made as an example:. Your chatbot should be much better!
+
+Note: We encourage you to use AI tools (like Cursor or LLMs) to help you on this assignment. Learn how to leverage these tools.
 
 ## Setup
 
-1. Install the required dependencies:
+1. Make a virtual environment and install the required dependencies:
 ```bash
+python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -28,7 +46,7 @@ To deploy your chatbot as a free web interface using Hugging Face Spaces:
 
 1. Create a Hugging Face Space:
    - Go to [Hugging Face Spaces](https://huggingface.co/spaces)
-   - Click "Create new Space"
+   - Click "New Space"
    - Choose a name for your space (e.g., "boston-school-chatbot")
    - Select "Gradio" as the SDK
    - Choose "CPU" as the hardware (free tier)

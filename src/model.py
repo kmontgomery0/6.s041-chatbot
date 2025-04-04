@@ -21,6 +21,7 @@ Example Usage:
 import os
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 import torch
+import gc
 
 # Choose a model
 MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"  # Change this to your preferred model
@@ -34,53 +35,70 @@ MODEL_SAVE_PATH = "models/school_chatbot"
 
 def save_model(model, tokenizer, save_directory="models/school_chatbot"):
     """
-    Save the model and tokenizer to a local directory
+    Save the model and tokenizer to a local directory with CPU memory optimization
     """
     # Create directory if it doesn't exist
     os.makedirs(save_directory, exist_ok=True)
     
-    # Save model and tokenizer
-    model.save_pretrained(save_directory)
-    tokenizer.save_pretrained(save_directory)
+    # Move model to CPU if it's on GPU
+    model = model.cpu()
     
-    print(f"Model and tokenizer saved to {save_directory}")
+    # Save in half precision to reduce file size
+    model.half()  # Convert to float16
+    
+    try:
+        # Save in smaller chunks
+        model.save_pretrained(
+            save_directory,
+            safe_serialization=True,  # More memory efficient serialization
+            max_shard_size="500MB"    # Split into smaller files
+        )
+        
+        # Save tokenizer (relatively small, no special handling needed)
+        tokenizer.save_pretrained(save_directory)
+        
+        print(f"Model and tokenizer saved to {save_directory}")
+    finally:
+        # Clean up memory
+        gc.collect()
+        
+        # Convert back to float32 for continued use if needed
+        model.float()
 
 
 def load_model():
     """
-    Load the model with 4-bit quantization
+    Load the model for CPU usage
     """
     try:
-        # Use quantization to reduce memory usage
-        quantization_config = BitsAndBytesConfig(
-            load_in_4bit=True,              # Enable 4-bit quantization
-            bnb_4bit_compute_dtype=torch.float16,  # Compute dtype
-            bnb_4bit_quant_type="nf4",     # Normalized float 4 format
-            bnb_4bit_use_double_quant=True # Use nested quantization
-        )
-
         if os.path.exists(MODEL_SAVE_PATH):
-            print("Loading quantized model from local storage...")
+            print("Loading model from local storage...")
             tokenizer = AutoTokenizer.from_pretrained(MODEL_SAVE_PATH)
             model = AutoModelForCausalLM.from_pretrained(
                 MODEL_SAVE_PATH,
-                quantization_config=quantization_config,
-                device_map="auto"
+                low_cpu_mem_usage=True,
+                torch_dtype=torch.float32
             )
         else:
-            print("Downloading and quantizing model from Hugging Face...")
+            print("Downloading model from Hugging Face... Should take 2-3 minutes.")
             tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
             model = AutoModelForCausalLM.from_pretrained(
                 MODEL_NAME,
-                quantization_config=quantization_config,
-                device_map="auto"
+                low_cpu_mem_usage=True,
+                torch_dtype=torch.float32
             )
             # Save for future use
             save_model(model, tokenizer)
             
+        # Move model to CPU
+        model = model.to("cpu")
         return model, tokenizer
         
     except Exception as e:
         print(f"Error loading model: {e}")
         return None, None
 
+if __name__ == "__main__":
+    model, tokenizer = load_model()
+    print(model)
+    print(tokenizer)

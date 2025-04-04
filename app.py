@@ -19,7 +19,7 @@ Example Usage:
 """
 
 import gradio as gr
-from src.model import load_model, generate_response
+from src.model import load_model
 from src.chat import SchoolChatbot
 
 def create_chatbot():
@@ -62,16 +62,22 @@ def create_chatbot():
                 - Return that response as a string
         """
         # TODO: Generate and return response
-        pass
+        try:
+            # Generate response using our chatbot
+            response = chatbot.get_response(message)
+            return response
+            
+        except Exception as e:
+            return f"I apologize, but I encountered an error. Please try again. Error: {str(e)}"
     
-    # Create Gradio interface
+    
+    # Create Gradio interface. Customize the interface as you'd like!
     demo = gr.ChatInterface(
         chat,
         title="Boston Public School Selection Assistant",
         description="Ask me anything about Boston public schools!",
         examples=[
-            "What schools in Jamaica Plain offer Spanish programs?",
-            "How do I schedule a tour of the Hernandez School?"
+            "I live in Jamaica Plain and want to send my child to kindergarten. What schools are available?"
         ]
     )
     
