@@ -16,6 +16,14 @@ class SchoolChatbot:
         """
         model_id = MY_MODEL if MY_MODEL else BASE_MODEL # define MY_MODEL in config.py if you create a new model in the HuggingFace Hub
         self.client = InferenceClient(model=model_id, token=HF_TOKEN)
+
+    @staticmethod
+    def load_age_cutoffs(filepath='age_cutoffs_2025.txt'):
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                return f.read()
+        except FileNotFoundError:
+            return "# AGE_CUTOFFS\n<Error: age cutoff file not found>"
         
     def format_prompt(self, user_input):
         """
@@ -37,12 +45,51 @@ class SchoolChatbot:
              User: {user_input}
              Assistant:"
         """
-        system_message = """You are a helpful assistant that specializes in Boston public schools. 
+        system_message = """You are a helpful and accurate school enrollment assistant for Boston Public Schools (BPS).
         You can provide information about school options, locations, programs, and other details
-        to help families make informed decisions about their children's education."""
-        
-        prompt = f"<|system|>\n{system_message}\n<|user|>\n{user_input}\n<|assistant|>\n"
+        to help families make informed decisions about their children's education.
+        Use the information below to answer families’ questions about school eligibility, grade levels, school assignments, and transportation.
+        If you are unsure, refer the user to a BPS Welcome Center at (617) 635-9010.
+        """
+
+        age_cutoffs_section = SchoolChatbot.load_age_cutoffs()
+
+        transportation_section = """# TRANSPORTATION_ELIGIBILITY
+        - K0–K1: Bus eligible if >0.75 miles from school
+        - K2–5: Bus eligible if >1 mile
+        - Grades 6–8: Bus eligible if >1.5 miles
+        - Grades 9–12: MBTA pass provided
+        """
+
+        # Placeholder sections for structured data you’ll import later
+        # zone_data_section = "# SCHOOL_ZONES_BY_ZIP\n<insert zip to school zone mappings here>\n"
+        # school_data_section = "# SCHOOL_DATA\n<insert detailed school data here>\n"
+
+        examples_section = """# EXAMPLES
+            User: My child is turning 5 on August 15 and we live in 02124. What grade can they enter, and what schools are available?
+            Assistant: Since your child turns 5 before September 1, they are eligible for K2. Based on your zip code (02124), eligible schools may include Joseph Lee K-8, Mildred Avenue, and TechBoston Academy.
+
+            User: My daughter is 4 but her birthday is in October. Can she attend K1?
+            Assistant: Children must be 4 years old on or before September 1 to attend K1. Since your daughter’s birthday is in October, she would not be eligible this year.
+
+            User: What school options are available in 02118?
+            Assistant: Families in 02118 may be eligible for schools like Hurley K-8, Blackstone Innovation School, and O'Bryant Exam School, depending on the child’s grade level and test eligibility.
+            """
+
+        # Combine all sections into the final prompt
+        prompt = (
+            f"<|system|>\n{system_message}\n"
+            f"{age_cutoffs_section}\n"
+            f"{transportation_section}\n"
+            # f"{zone_data_section}\n"
+            # f"{school_data_section}\n"
+            f"{examples_section}\n"
+            f"<|user|>\n{user_input}\n<|assistant|>\n"
+        )
+
         return prompt
+    
+
         
     def get_response(self, user_input):
         """
@@ -75,3 +122,4 @@ class SchoolChatbot:
         )
         
         return response
+

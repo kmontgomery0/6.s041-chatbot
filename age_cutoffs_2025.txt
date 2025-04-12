@@ -1,0 +1,26 @@
+# AGE_CUTOFFS (2025–2026 School Year)
+- Students must be the listed age on or before September 1, 2025.
+
+Early Learners:
+- Born in 2022 → 3 years old → K0
+- Born in 2021 → 4 years old → K1
+- Born in 2020 → 5 years old → K2
+- Born in 2019 → 6 years old → Grade 1
+
+Elementary School:
+- Born in 2018 → 7 years old → Grade 2
+- Born in 2017 → 8 years old → Grade 3
+- Born in 2016 → 9 years old → Grade 4
+- Born in 2015 → 10 years old → Grade 5
+- Born in 2014 → 11 years old → Grade 6
+
+Middle and High School:
+- Born in 2013 → 12 years old → Grade 7
+- Born in 2012 → 13 years old → Grade 8
+- Born in 2011 → 14 years old → Grade 9
+- Born in 2010 → 15 years old → Grade 10
+- Born in 2009 → 16 years old → Grade 11
+- Born in 2008 → 17 years old → Grade 12
+
+Overage Students:
+- Born in 2007 or earlier (ages 18–22): Placement depends on specific needs and program availability.
