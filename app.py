@@ -59,8 +59,9 @@ def create_chatbot():
                 - Generate an appropriate response to the current message
                 - Return that response as a string
         """
-        # TODO: Generate and return response
-        pass
+        # Get response from chatbot
+        response = chatbot.get_response(message)
+        return response
 
     
     
@@ -70,7 +71,11 @@ def create_chatbot():
         title="Boston Public School Selection Assistant",
         description="Ask me anything about Boston public schools! Since I am a free tier chatbot, I may give a 503 error when I'm busy. If that happens, please try again a few seconds later.",
         examples=[
-            "I live in Jamaica Plain and want to send my child to kindergarten. What schools are available?"
+            "I live in Jamaica Plain and want to send my child to kindergarten. What schools are available?",
+            "What schools offer bilingual programs?",
+            "Which high schools have strong STEM programs?",
+            "Tell me about special education services in Boston public schools",
+            "How does the school assignment process work in Boston?"
         ]
     )
     
