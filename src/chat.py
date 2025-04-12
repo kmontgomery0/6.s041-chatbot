@@ -1,5 +1,6 @@
 from huggingface_hub import InferenceClient
 from config import BASE_MODEL, MY_MODEL, HF_TOKEN
+import pandas as pd
 
 class SchoolChatbot:
     """
@@ -10,12 +11,14 @@ class SchoolChatbot:
         response = chatbot.get_response("What schools offer Spanish programs?")
     """
 
-    def __init__(self):
+    def __init__(self, school_csv='BPS.csv', programs_csv='BPS-special-programs.csv'):
         """
         Initialize the chatbot with a HF model ID
         """
         model_id = MY_MODEL if MY_MODEL else BASE_MODEL # define MY_MODEL in config.py if you create a new model in the HuggingFace Hub
         self.client = InferenceClient(model=model_id, token=HF_TOKEN)
+        self.school_csv = school_csv
+        self.programs_csv = programs_csv
 
     @staticmethod
     def load_age_cutoffs(filepath='age_cutoffs_2025.txt'):
@@ -24,6 +27,56 @@ class SchoolChatbot:
                 return f.read()
         except FileNotFoundError:
             return "# AGE_CUTOFFS\n<Error: age cutoff file not found>"
+        
+    @staticmethod
+    def format_school_data(
+        school_csv='BPS.csv',
+        programs_csv='BPS-special-programs.csv',
+        max_schools=None
+    ):
+        """
+        Merges main school data with special program indicators and formats it for in-context prompting.
+
+        Args:
+            school_csv (str): Path to the main school data CSV.
+            programs_csv (str): Path to the special programs CSV.
+            max_schools (int or None): Max number of schools to include.
+
+        Returns:
+            str: Formatted string for # SCHOOL_DATA section.
+        """
+        try:
+            # Load both datasets
+            schools_df = pd.read_csv(school_csv)
+            programs_df = pd.read_csv(programs_csv)
+
+            # Merge on School Name (ensure consistency in casing/whitespace if needed)
+            merged_df = pd.merge(schools_df, programs_df, on="School Name", how="left")
+
+            # Optionally limit number of rows
+            if max_schools:
+                merged_df = merged_df.head(max_schools)
+
+            school_lines = []
+            for _, row in merged_df.iterrows():
+                # Collect all programs marked "Yes"
+                programs_offered = [col for col in programs_df.columns[1:] if row.get(col, "") == "Yes"]
+                programs_str = ", ".join(programs_offered) if programs_offered else "None"
+
+                school_lines.append(
+                    f'- "{row["School Name"]}":\n'
+                    f'    Address: {row["Address"]}\n'
+                    f'    Grades: {row["Grades Served"]}\n'
+                    f'    Type: {row["School Type"]}\n'
+                    f'    Contact: {row["Email Address"]}, {row["Phone Number"]}\n'
+                    f'    Programs: {programs_str}'
+                )
+
+            return "# SCHOOL_DATA\n" + "\n".join(school_lines)
+
+        except Exception as e:
+            return f"# SCHOOL_DATA\n<Error loading or merging data: {e}>"
+
         
     def format_prompt(self, user_input):
         """
@@ -61,7 +114,11 @@ class SchoolChatbot:
         - Grades 9–12: MBTA pass provided
         """
 
-        # school_data_section = "# SCHOOL_DATA\n<insert detailed school data here>\n"
+        school_data_section = SchoolChatbot.format_school_data(
+            school_csv=self.school_csv,
+            programs_csv=self.programs_csv,
+            max_schools=30
+        )
 
         examples_section = """# EXAMPLES
             User: My child is turning 5 on August 15 and we live in 02124. What grade can they enter, and what schools are available?
@@ -79,7 +136,7 @@ class SchoolChatbot:
             f"<|system|>\n{system_message}\n"
             f"{age_cutoffs_section}\n"
             f"{transportation_section}\n"
-            # f"{school_data_section}\n"
+            f"{school_data_section}\n"
             f"{examples_section}\n"
             f"<|user|>\n{user_input}\n<|assistant|>\n"
         )
