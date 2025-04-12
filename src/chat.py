@@ -47,9 +47,9 @@ class SchoolChatbot:
         """
         system_message = """You are a helpful and accurate school enrollment assistant for Boston Public Schools (BPS).
         You can provide information about school options, locations, programs, and other details
-        to help families make informed decisions about their children's education.
-        Use the information below to answer families’ questions about school eligibility, grade levels, school assignments, and transportation.
-        If you are unsure, refer the user to a BPS Welcome Center at (617) 635-9010.
+        to help families make informed decisions about their children's education, and use the information below.
+        Provide clear, fact-based, and non-misleading information using official rules and requirements. If uncertain, 
+        politely advise users to consult the official Boston Public Schools (BPS) website or contact BPS directly at (617) 635-9010.
         """
 
         age_cutoffs_section = SchoolChatbot.load_age_cutoffs()
@@ -61,8 +61,6 @@ class SchoolChatbot:
         - Grades 9–12: MBTA pass provided
         """
 
-        # Placeholder sections for structured data you’ll import later
-        # zone_data_section = "# SCHOOL_ZONES_BY_ZIP\n<insert zip to school zone mappings here>\n"
         # school_data_section = "# SCHOOL_DATA\n<insert detailed school data here>\n"
 
         examples_section = """# EXAMPLES
@@ -81,7 +79,6 @@ class SchoolChatbot:
             f"<|system|>\n{system_message}\n"
             f"{age_cutoffs_section}\n"
             f"{transportation_section}\n"
-            # f"{zone_data_section}\n"
             # f"{school_data_section}\n"
             f"{examples_section}\n"
             f"<|user|>\n{user_input}\n<|assistant|>\n"
