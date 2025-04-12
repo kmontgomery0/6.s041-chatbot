@@ -67,17 +67,27 @@ def create_chatbot():
     
     # Create Gradio interface. Customize the interface however you'd like!
     demo = gr.ChatInterface(
-        chat,
-        title="Boston Public School Selection Assistant",
-        description="Ask me anything about Boston public schools! Since I am a free tier chatbot, I may give a 503 error when I'm busy. If that happens, please try again a few seconds later.",
+        fn=chat,
+        title="Boston Public School Recommender",
+        description=(
+            "Looking for a Boston public school for your child? <br><br>"
+            "I'm here to help you explore school options based on your needs.<br><br>"
+            "<b>Tell me things like:</b><br> "
+            "• Your neighborhood (e.g., Roxbury, Jamaica Plain)<br>"
+            "• Grade level (e.g., kindergarten, 6th grade)<br>"
+            "• Program preferences (e.g., Spanish immersion, advanced work, STEM focus)<br>"
+            "• Special requirements (e.g., before-school care, bus eligibility)<br><br>"
+            "I'll recommend schools, explain programs, and answer your questions."
+        ),
         examples=[
-            "I live in Jamaica Plain and want to send my child to kindergarten. What schools are available?",
-            "What schools offer bilingual programs?",
-            "Which high schools have strong STEM programs?",
-            "Tell me about special education services in Boston public schools",
-            "How does the school assignment process work in Boston?"
+            "I live in Dorchester and my daughter is going into 1st grade. Any schools you recommend?",
+            "We want a school with Spanish immersion for kindergarten near Jamaica Plain.",
+            "My son is in 6th grade and loves science. Are there STEM-focused schools in Boston?",
+            "Do any Boston public schools offer advanced work classes in 4th grade?",
+            "We need before-school care and bus service. Which schools provide those?",
         ]
     )
+
     
     return demo
 
