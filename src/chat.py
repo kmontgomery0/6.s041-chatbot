@@ -1,6 +1,8 @@
 from huggingface_hub import InferenceClient
 from config import BASE_MODEL, MY_MODEL, HF_TOKEN
 import pandas as pd
+import os
+from src.rag_engine import RAGEngine, SchoolDocument
 
 class SchoolChatbot:
     """
@@ -19,6 +21,37 @@ class SchoolChatbot:
         self.client = InferenceClient(model=model_id, token=HF_TOKEN)
         self.school_csv = school_csv
         self.programs_csv = programs_csv
+        
+        # Initialize the RAG engine
+        self.rag_engine = RAGEngine()
+        
+        # Set up the RAG index
+        self._setup_rag()
+
+    def _setup_rag(self):
+        """
+        Set up the RAG engine by either loading a pre-built index or building a new one.
+        """
+        index_dir = 'models'
+        index_path = os.path.join(index_dir, 'school_rag')
+        
+        # Check if index files exist
+        if (os.path.exists(f"{index_path}_documents.pkl") and 
+            os.path.exists(f"{index_path}_embeddings.pkl") and 
+            os.path.exists(f"{index_path}_faiss.index")):
+            # Load existing index
+            try:
+                self.rag_engine.load_index(index_path)
+                print("Loaded existing RAG index.")
+                return
+            except Exception as e:
+                print(f"Error loading index: {e}. Building new index...")
+        
+        # Build new index
+        os.makedirs(index_dir, exist_ok=True)
+        self.rag_engine.process_school_data(self.school_csv, self.programs_csv)
+        self.rag_engine.build_index(index_path)
+        print("Built and saved new RAG index.")
 
     @staticmethod
     def load_age_cutoffs(filepath='age_cutoffs_2025.txt'):
@@ -71,29 +104,28 @@ class SchoolChatbot:
         
     def format_prompt(self, user_input):
         """
-        TODO: Implement this method to format the user's input into a proper prompt.
+        Format the user's input into a proper prompt using RAG to retrieve relevant context.
         
-        This method should:
-        1. Add any necessary system context or instructions
-        2. Format the user's input appropriately
-        3. Add any special tokens or formatting the model expects
-
         Args:
             user_input (str): The user's question about Boston schools
 
         Returns:
             str: A formatted prompt ready for the model
-        
-        Example prompt format:
-            "You are a helpful assistant that specializes in Boston schools...
-             User: {user_input}
-             Assistant:"
         """
         system_message = """You are a helpful and accurate school enrollment assistant for Boston Public Schools (BPS).
         You can provide information about school options, locations, programs, and other details
-        to help families make informed decisions about their children's education, and use the information below.
-        Provide clear, fact-based, and non-misleading information using official rules and requirements. If uncertain, 
-        politely advise users to consult the official Boston Public Schools (BPS) website or contact BPS directly at (617) 635-9010.
+        to help families make informed decisions about their children's education.
+        
+        Provide clear, fact-based, and non-misleading information using the data provided below.
+        Focus on answering only the user's specific question using the relevant school information.
+        
+        When answering questions about specific schools, neighborhoods, or programs, prioritize information 
+        from the RETRIEVED_SCHOOLS section, which contains the most relevant schools for the user's query.
+
+        DO NOT make up or hallucinate any school information.
+
+        If the retrieved schools don't match what the user is looking for, acknowledge this limitation
+        and suggest they contact BPS directly at (617) 635-9010 for more information.
         """
 
         age_cutoffs_section = SchoolChatbot.load_age_cutoffs()
@@ -104,56 +136,47 @@ class SchoolChatbot:
         - Grades 6–8: Bus eligible if >1.5 miles
         - Grades 9–12: MBTA pass provided
         """
-
-        school_data_section = SchoolChatbot.format_school_data(
-            school_csv=self.school_csv,
-            programs_csv=self.programs_csv,
-        )
-        print(school_data_section)
+        
+        # Instead of including all school data, retrieve relevant schools using RAG
+        retrieved_docs = self.rag_engine.retrieve(user_input, top_k=3)
+        retrieved_context = self.rag_engine.format_retrieved_context(retrieved_docs)
+        
+        # Comment out the full dataset reference to reduce token usage
+        # school_data_section = SchoolChatbot.format_school_data(
+        #     school_csv=self.school_csv,
+        #     programs_csv=self.programs_csv,
+        # )
 
         examples_section = """# EXAMPLES
             User: My child is turning 5 on August 15 and we live in 02124. What grade can they enter, and what schools are available?
             Assistant: Since your child turns 5 before September 1, they are eligible for K2. Based on your zip code (02124), eligible schools may include Joseph Lee K-8, Mildred Avenue, and TechBoston Academy.
-
-            User: My daughter is 4 but her birthday is in October. Can she attend K1?
-            Assistant: Children must be 4 years old on or before September 1 to attend K1. Since your daughter’s birthday is in October, she would not be eligible this year.
-
-            User: What school options are available in 02118?
-            Assistant: Families in 02118 may be eligible for schools like Hurley K-8, Blackstone Innovation School, and O'Bryant Exam School, depending on the child’s grade level and test eligibility.
             """
 
         # Combine all sections into the final prompt
+        # f"{school_data_section}\n"  # Comment out the full dataset section
         prompt = (
             f"<|system|>\n{system_message}\n"
             f"{age_cutoffs_section}\n"
             f"{transportation_section}\n"
-            f"{school_data_section}\n"
+            f"{retrieved_context}\n"
             f"{examples_section}\n"
             f"<|user|>\n{user_input}\n<|assistant|>\n"
         )
 
+        print(prompt)
         return prompt
     
 
         
     def get_response(self, user_input):
         """
-        TODO: Implement this method to generate responses to user questions.
+        Generate responses to user questions using RAG and the language model.
         
-        This method should:
-        1. Use format_prompt() to prepare the input
-        2. Generate a response using the model
-        3. Clean up and return the response
-
         Args:
             user_input (str): The user's question about Boston schools
 
         Returns:
             str: The chatbot's response
-
-        Implementation tips:
-        - Use self.format_prompt() to format the user's input
-        - Use self.client to generate responses
         """
         prompt = self.format_prompt(user_input)
         
