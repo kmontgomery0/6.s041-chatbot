@@ -32,7 +32,6 @@ class SchoolChatbot:
     def format_school_data(
         school_csv='BPS.csv',
         programs_csv='BPS-special-programs.csv',
-        max_schools=None
     ):
         """
         Merges main school data with special program indicators and formats it for in-context prompting.
@@ -50,28 +49,20 @@ class SchoolChatbot:
             schools_df = pd.read_csv(school_csv)
             programs_df = pd.read_csv(programs_csv)
 
-            # Merge on School Name (ensure consistency in casing/whitespace if needed)
+            # Merge on School Name
             merged_df = pd.merge(schools_df, programs_df, on="School Name", how="left")
 
-            # Optionally limit number of rows
-            if max_schools:
-                merged_df = merged_df.head(max_schools)
-
+            # Use more concise formatting
             school_lines = []
             for _, row in merged_df.iterrows():
                 # Collect all programs marked "Yes"
                 programs_offered = [col for col in programs_df.columns[1:] if row.get(col, "") == "Yes"]
-                programs_str = ", ".join(programs_offered) if programs_offered else "None"
+                programs_str = "Y" if programs_offered else "N"
 
                 school_lines.append(
-                    f'- "{row["School Name"]}":\n'
-                    f'    Address: {row["Address"]}\n'
-                    f'    Grades: {row["Grades Served"]}\n'
-                    f'    Type: {row["School Type"]}\n'
-                    f'    Contact: {row["Email Address"]}, {row["Phone Number"]}\n'
-                    f'    Programs: {programs_str}'
-                )
-
+                    f'- {row["School Name"]}: {row["Grades Served"]}, {row["School Type"]}, {programs_str}'
+                )    
+            school_lines = list(set(school_lines))  # Remove duplicates
             return "# SCHOOL_DATA\n" + "\n".join(school_lines)
 
         except Exception as e:
@@ -117,8 +108,8 @@ class SchoolChatbot:
         school_data_section = SchoolChatbot.format_school_data(
             school_csv=self.school_csv,
             programs_csv=self.programs_csv,
-            max_schools=30
         )
+        print(school_data_section)
 
         examples_section = """# EXAMPLES
             User: My child is turning 5 on August 15 and we live in 02124. What grade can they enter, and what schools are available?
