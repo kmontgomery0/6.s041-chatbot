@@ -30,10 +30,6 @@ def create_chatbot():
     def chat(message, history):
         """
         TODO:Generate a response for the current message in a Gradio chat interface.
-        
-        This function is called by Gradio's ChatInterface every time a user sends a message.
-        You only need to generate and return the assistant's response - Gradio handles the
-        chat display and history management automatically.
 
         Args:
             message (str): The current message from the user
