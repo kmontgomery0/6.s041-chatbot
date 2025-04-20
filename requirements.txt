@@ -8,3 +8,7 @@ huggingface-hub>=0.19.0
 numpy<2.0.0
 ipywidgets>=8.0.0
 python-dotenv>=1.1.0
+sentence-transformers>=2.2.2
+scikit-learn>=1.2.0
+faiss-cpu>=1.7.4
+pandas>=2.0.0
